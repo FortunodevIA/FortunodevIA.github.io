@@ -1,0 +1,157 @@
+{% extends 'quiz/base.html' %}
+
+{% block content %}
+<div class="grid grid-2">
+    <div>
+        <div class="form-card">
+            <h2>Importer un PDF de cours</h2>
+            <p>Choisis un fichier PDF et donne-lui un titre clair.</p>
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                {% if upload_form.non_field_errors %}
+                    <div class="flash-message" style="background:#fee2e2;color:#991b1b;">
+                        {{ upload_form.non_field_errors }}
+                    </div>
+                {% endif %}
+                <div class="field-group">
+                    {{ upload_form.title.label_tag }}
+                    {{ upload_form.title }}
+                    {% for error in upload_form.title.errors %}
+                        <div class="flash-message" style="background:#fee2e2;color:#991b1b; margin-top:8px;">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                <div class="field-group">
+                    {{ upload_form.file.label_tag }}
+                    {{ upload_form.file }}
+                    {% for error in upload_form.file.errors %}
+                        <div class="flash-message" style="background:#fee2e2;color:#991b1b; margin-top:8px;">{{ error }}</div>
+                    {% endfor %}
+                </div>
+                <input type="submit" class="button" value="Envoyer le PDF" />
+            </form>
+        </div>
+
+        <div class="info-card">
+            <h3>Statistiques rapides</h3>
+            <div class="badge">{{ progress.quizzes_count }} quiz</div>
+            <div class="badge">{{ progress.attempts_count }} passages</div>
+            <div class="badge">Moyenne {{ progress.average_score }}/10</div>
+            <div class="badge">Meilleur score {{ best_score }}/10</div>
+            <div class="badge">Durée moyenne {{ average_duration }}</div>
+            <p class="small-text">Ton tableau de bord conserve ton historique et te permet de revenir sur les quiz déjà passés.</p>
+        </div>
+
+        <div class="info-card">
+            <h3>Usage global</h3>
+            <div class="badge">{{ global_stats.total_users }} utilisateurs</div>
+            <div class="badge">{{ global_stats.active_sessions }} sessions actives</div>
+            <div class="badge">{{ global_stats.total_documents }} documents</div>
+            <div class="badge">{{ global_stats.total_quizzes }} quiz totaux</div>
+            <p class="small-text">Statistiques globales de la plateforme</p>
+        </div>
+
+        <div class="quiz-card">
+            <h3>Fiches de révision</h3>
+            {% if documents %}
+                <ul class="list-reset">
+                    {% for document in documents %}
+                        <li class="stack-item">
+                            <strong>{{ document.title }}</strong><br />
+                            <span class="small-text">{{ document.short_summary }}</span>
+                            <div class="button-group">
+                                <a class="button secondary-button" href="{% url 'quiz:create_quiz' document.id %}">Créer un quiz</a>
+                                <a class="button secondary-button" href="{% url 'quiz:create_quiz' document.id %}">Réviser</a>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>Aucun document à réviser pour le moment.</p>
+            {% endif %}
+        </div>
+
+        <div class="quiz-card">
+            <h3>Mes documents</h3>
+            {% if documents %}
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Titre</th>
+                            <th>Importé le</th>
+                            <th>Résumé</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for document in documents %}
+                            <tr>
+                                <td>
+                                    <strong>{{ document.title }}</strong>
+                                    {% if document.keyword_list %}
+                                        <div style="margin-top:8px;">
+                                            {% for keyword in document.keyword_list %}
+                                                <span class="badge">{{ keyword }}</span>
+                                            {% endfor %}
+                                        </div>
+                                    {% endif %}
+                                </td>
+                                <td>{{ document.uploaded_at|date:'d/m/Y H:i' }}</td>
+                                <td>{{ document.short_summary }}</td>
+                                <td><a class="button secondary-button" href="{% url 'quiz:create_quiz' document.id %}">Créer un quiz</a></td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>Aucun document importé pour le moment.</p>
+            {% endif %}
+        </div>
+
+        <div class="quiz-card">
+            <h3>Mes tentatives récentes</h3>
+            {% if recent_attempts %}
+                <ul class="list-reset">
+                    {% for attempt in recent_attempts %}
+                        <li class="stack-item">
+                            <strong>{{ attempt.quiz.title }}</strong><br />
+                            Score : {{ attempt.score }}/{{ attempt.max_score }} · {{ attempt.completed_at|date:'d/m/Y H:i' }}
+                            <div class="spacing-top-lg">
+                                <a class="button secondary-button" href="{% url 'quiz:results' attempt.id %}">Voir le détail</a>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>Aucune tentative enregistrée pour le moment.</p>
+            {% endif %}
+        </div>
+    </div>
+
+    <div>
+        <div class="panel">
+            <h3>Quiz récents</h3>
+            {% if quiz_rankings %}
+                <ul class="list-reset">
+                    {% for ranking in quiz_rankings %}
+                        <li class="stack-item">
+                            <strong>{{ ranking.title }}</strong><br />
+                            Meilleur : {{ ranking.best_score }}/10 · Moyenne : {{ ranking.avg_score }}/10<br />
+                            Dernier passage : {{ ranking.last_score }}{% if ranking.last_date %} · {{ ranking.last_date|date:'d/m/Y H:i' }}{% endif %}
+                            <div class="spacing-top-lg">
+                                <a class="button secondary-button" href="{% url 'quiz:take_quiz' ranking.quiz_id %}">Passer le quiz</a>
+                            </div>
+                        </li>
+                    {% endfor %}
+                </ul>
+            {% else %}
+                <p>Aucun quiz généré pour le moment.</p>
+            {% endif %}
+        </div>
+        <div class="panel">
+            <h3>Conseil rapide</h3>
+            <p>Importe un PDF de cours clair, puis commence par un quiz de 10 questions. Utilisation illimitée — crée autant de quiz que tu veux.</p>
+            <p><span class="status-success">100 % gratuit</span> — analyse et génération de quiz sans abonnement.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

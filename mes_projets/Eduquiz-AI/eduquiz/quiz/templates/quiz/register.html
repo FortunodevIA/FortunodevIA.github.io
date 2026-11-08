@@ -1,0 +1,55 @@
+{% extends 'quiz/base.html' %}
+
+{% block content %}
+<div class="form-card">
+    <h2>Créer ton compte</h2>
+    <p>Crée un compte pour commencer à importer des cours et générer des quiz.</p>
+    <form method="post">
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+            <div class="error-box">
+                {% for error in form.non_field_errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+        <div class="field-group">
+            {{ form.username.label_tag }}
+            {{ form.username }}
+            {% for error in form.username.errors %}
+                <p class="error-text">{{ error }}</p>
+            {% endfor %}
+        </div>
+        <div class="field-group">
+            {{ form.email.label_tag }}
+            {{ form.email }}
+            {% for error in form.email.errors %}
+                <p class="error-text">{{ error }}</p>
+            {% endfor %}
+        </div>
+        <div class="field-group">
+            {{ form.password1.label_tag }}
+            {{ form.password1 }}
+            {% for error in form.password1.errors %}
+                <p class="error-text">{{ error }}</p>
+            {% endfor %}
+            <label class="password-toggle">
+                <input type="checkbox" class="toggle-password" data-target="{{ form.password1.id_for_label }}" />
+                Afficher le mot de passe
+            </label>
+        </div>
+        <div class="field-group">
+            {{ form.password2.label_tag }}
+            {{ form.password2 }}
+            {% for error in form.password2.errors %}
+                <p class="error-text">{{ error }}</p>
+            {% endfor %}
+            <label class="password-toggle">
+                <input type="checkbox" class="toggle-password" data-target="{{ form.password2.id_for_label }}" />
+                Afficher le mot de passe
+            </label>
+        </div>
+        <input type="submit" class="button" value="Créer mon compte" />
+    </form>
+</div>
+{% endblock %}

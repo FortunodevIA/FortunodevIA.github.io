@@ -1,0 +1,6 @@
+Fortuno Conduite IA : une voiture qui
+apprend de ses erreurs !
+J'ai développé une simulation de conduite autonome avec JavaScript et TensorFlow.js, dans laquelle une voiture apprend progressivement à éviter les obstacles grâce à l'apprentissage par renforcement. •
+Grâce au Deep Q-Learning, son réseau de neurones analyse les informations de ses capteurs et choisit entre avancer, tourner à gauche ou tourner à droite. Après chaque collision, le modele ajuste sa stratégie pour tenter d'améliorer ses performances au fil des épisodes d'entraînement.
+Résultat actuel : 628 mètres parcourus sur un objectif de 1 000 mètres ! L'entraînement continue pour améliorer ses décisions.
+Ce projet me permet d'explorer concrètement le Machine Learning, le Deep Learning et les applications de l'intelligence artificielle dans la conduite autonome.

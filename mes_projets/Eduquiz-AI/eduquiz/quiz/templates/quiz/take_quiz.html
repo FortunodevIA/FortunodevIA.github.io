@@ -1,0 +1,49 @@
+{% extends 'quiz/base.html' %}
+
+{% block content %}
+<div class="quiz-card">
+    <h2>{{ quiz.title }}</h2>
+    <p>Nombre de questions : {{ quiz.question_count }} · Niveau : {{ quiz.get_level_display }}</p>
+    <form method="post">
+        {% csrf_token %}
+        {% for question in questions %}
+            <div class="panel panel-compact">
+                <p><strong>Question {{ forloop.counter }}</strong></p>
+                <p>{{ question.text }}</p>
+                <div class="field-group">
+                    {% if question.question_type == 'mcq' %}
+                        {% for option_key, option_text in question.all_options %}
+                            <label class="radio-label">
+                                <input type="radio" name="question_{{ question.id }}" value="{{ option_key }}" />
+                                {{ option_text }}
+                            </label>
+                        {% endfor %}
+                    {% elif question.question_type == 'tf' %}
+                        <label class="radio-label">
+                            <input type="radio" name="question_{{ question.id }}" value="a" /> Vrai
+                        </label>
+                        <label class="radio-label">
+                            <input type="radio" name="question_{{ question.id }}" value="b" /> Faux
+                        </label>
+                    {% elif question.question_type == 'multi' %}
+                        {% for option_key, option_text in question.all_options %}
+                            <label class="checkbox-label">
+                                <input type="checkbox" name="question_{{ question.id }}" value="{{ option_key }}" />
+                                {{ option_text }}
+                            </label>
+                        {% endfor %}
+                    {% else %}
+                        {% for option_key, option_text in question.all_options %}
+                            <label class="radio-label">
+                                <input type="radio" name="question_{{ question.id }}" value="{{ option_key }}" />
+                                {{ option_text }}
+                            </label>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+        <input type="submit" class="button" value="Terminer le quiz" />
+    </form>
+</div>
+{% endblock %}

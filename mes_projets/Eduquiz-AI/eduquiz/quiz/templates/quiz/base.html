@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>EduQuiz AI</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fb;
+            color: #1f2937;
+        }
+        .page {
+            max-width: 980px;
+            margin: 0 auto;
+            padding: 24px;
+        }
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 18px 0;
+        }
+        header h1 {
+            margin: 0;
+            font-size: 32px;
+        }
+        .hero-card,
+        .panel,
+        .form-card,
+        .quiz-card,
+        .result-card {
+            background: #ffffff;
+            border-radius: 18px;
+            border: 1px solid #e2e8f0;
+            box-shadow: 0 16px 40px rgba(15, 23, 42, 0.06);
+            padding: 28px;
+            margin-bottom: 20px;
+        }
+        .grid {
+            display: grid;
+            gap: 20px;
+        }
+        .grid-2 {
+            grid-template-columns: 1.3fr 0.9fr;
+        }
+        .grid-3 {
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        }
+        .grid-fit {
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+        }
+        .panel-primary {
+            background: #f8fafc;
+            border-color: #c7d2fe;
+        }
+        .panel-primary h3 {
+            color: #1e3a8a;
+        }
+        .large-number {
+            font-size: 2.4rem;
+            font-weight: 700;
+            color: #1d4ed8;
+            margin: 0.25rem 0 0.5rem;
+        }
+        .button,
+        button,
+        input[type="submit"] {
+            border: none;
+            padding: 14px 22px;
+            border-radius: 12px;
+            background: #2563eb;
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+            transition: transform 0.2s ease, background 0.2s ease;
+        }
+        .button:hover,
+        button:hover,
+        input[type="submit"]:hover {
+            transform: translateY(-1px);
+            background: #1d4ed8;
+        }
+        .secondary-button {
+            background: #e5e7eb;
+            color: #111827;
+        }
+        .input-field {
+            width: 100%;
+            padding: 14px 16px;
+            border-radius: 12px;
+            border: 1px solid #d1d5db;
+            margin-top: 8px;
+            box-sizing: border-box;
+        }
+        .field-group {
+            margin-bottom: 16px;
+        }
+        .small-text {
+            color: #6b7280;
+            margin-top: 6px;
+            font-size: 0.95rem;
+        }
+        .table-responsive {
+            width: 100%;
+            overflow-x: auto;
+        }
+        .table {
+            width: 100%;
+            min-width: 560px;
+            border-collapse: collapse;
+        }
+        .table th,
+        .table td {
+            padding: 12px 14px;
+            border-bottom: 1px solid #e5e7eb;
+            text-align: left;
+        }
+        .info-card {
+            display: grid;
+            gap: 14px;
+            border: 1px solid #e5e7eb;
+            padding: 22px;
+            border-radius: 18px;
+            background: #fafbff;
+            margin-bottom: 20px;
+        }
+        .button-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-top: 12px;
+        }
+        .card-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 14px;
+        }
+        .list-reset {
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+        .stack-item {
+            margin-bottom: 16px;
+        }
+        .text-center {
+            text-align: center;
+        }
+        .spacing-top-lg {
+            margin-top: 24px;
+        }
+        .panel-spaced {
+            margin-top: 18px;
+        }
+        .panel-compact {
+            margin-bottom: 18px;
+        }
+        .pre-wrap {
+            white-space: pre-wrap;
+            margin: 0;
+        }
+        .summary-box {
+            background: #f3f4f6;
+            border-radius: 14px;
+            padding: 18px;
+            margin-top: 14px;
+            color: #334155;
+            line-height: 1.6;
+        }
+        .badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 999px;
+            background: #e2e8f0;
+            color: #0f172a;
+            font-size: 0.95rem;
+            margin-right: 8px;
+            margin-bottom: 8px;
+        }
+        .radio-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 14px;
+            background: #f8fafc;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            border: 1px solid #e2e8f0;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+        .radio-label:hover {
+            background: #eef2ff;
+        }
+        .radio-label input {
+            accent-color: #2563eb;
+        }
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 12px 14px;
+            background: #f8fafc;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            border: 1px solid #e2e8f0;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+        .checkbox-label:hover {
+            background: #eef2ff;
+        }
+        .checkbox-label input {
+            accent-color: #2563eb;
+        }
+        .field-group input[type='text'],
+        .field-group input[type='email'],
+        .field-group input[type='password'],
+        .field-group select {
+            width: 100%;
+            padding: 14px 16px;
+            border-radius: 12px;
+            border: 1px solid #d1d5db;
+            margin-top: 8px;
+            box-sizing: border-box;
+            font-size: 1rem;
+        }
+        .field-group textarea {
+            width: 100%;
+            min-height: 130px;
+            padding: 14px 16px;
+            border-radius: 12px;
+            border: 1px solid #d1d5db;
+            margin-top: 8px;
+            box-sizing: border-box;
+            font-size: 1rem;
+        }
+        .status-success {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #ecfdf5;
+            color: #166534;
+            border-radius: 999px;
+            padding: 8px 14px;
+        }
+        .status-warning {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #fef3c7;
+            color: #92400e;
+            border-radius: 999px;
+            padding: 8px 14px;
+        }
+        .flash-message {
+            margin-bottom: 22px;
+            padding: 18px;
+            background: #dbeafe;
+            color: #1e3a8a;
+            border-radius: 14px;
+        }
+        .footer {
+            margin-top: 24px;
+            padding-top: 24px;
+            border-top: 1px solid #e5e7eb;
+            color: #6b7280;
+        }
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        @media (max-width: 960px) {
+            .page {
+                padding: 18px;
+            }
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 18px;
+            }
+            header h1 {
+                font-size: 28px;
+            }
+            .grid-2 {
+                grid-template-columns: 1fr;
+            }
+            .table th,
+            .table td {
+                padding: 10px 12px;
+            }
+        }
+        @media (max-width: 720px) {
+            .form-card,
+            .panel,
+            .quiz-card,
+            .info-card,
+            .result-card {
+                padding: 20px;
+                border-radius: 16px;
+            }
+            .button,
+            button,
+            input[type='submit'] {
+                width: 100%;
+                padding: 12px 16px;
+            }
+            .radio-label {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .radio-label input {
+                align-self: flex-start;
+            }
+            .info-card {
+                gap: 12px;
+            }
+            .button-group {
+                flex-direction: column;
+            }
+            .table-responsive {
+                overflow-x: auto;
+            }
+            .table {
+                min-width: 100%;
+            }
+            .table th,
+            .table td {
+                display: block;
+                width: 100%;
+                box-sizing: border-box;
+            }
+            .table tr {
+                display: block;
+                margin-bottom: 12px;
+            }
+            .table th {
+                font-weight: 700;
+            }
+            .table td {
+                border: none;
+                padding: 8px 0;
+            }
+            .table tbody {
+                border-top: 1px solid #e5e7eb;
+            }
+        }
+    </style>
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            svg: { fontCache: 'global' }
+        };
+    </script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-svg.js"></script>
+</head>
+<body>
+    <div class="page">
+        <header>
+            <div>
+                <h1>EduQuiz AI</h1>
+                <p class="small-text">Transforme tes cours PDF en quiz — 100 % gratuit, sans abonnement.</p>
+            </div>
+            <div style="display:flex; align-items:center; gap:10px;">
+                {% if ai_enabled %}
+                    <span class="badge" style="background:#dcfce7; color:#166534;">IA activée</span>
+                {% else %}
+                    <span class="badge" style="background:#fef3c7; color:#92400e;">IA désactivée</span>
+                {% endif %}
+                {% if request.user.is_authenticated %}
+                    <a class="button secondary-button" href="{% url 'quiz:dashboard' %}">Mon espace</a>
+                    <a class="button secondary-button" href="{% url 'quiz:logout' %}">Déconnexion</a>
+                {% else %}
+                    <a class="button" href="{% url 'quiz:login' %}">Connexion</a>
+                    <a class="button" href="{% url 'quiz:register' %}">Créer un compte</a>
+                {% endif %}
+            </div>
+        </header>
+
+        {% for message in messages %}
+            <div class="flash-message">{{ message }}</div>
+        {% endfor %}
+
+        {% block content %}{% endblock %}
+
+        <footer class="footer">
+            <p>EduQuiz — extraction PDF, quiz et correction dans une interface claire et moderne.</p>
+            <p class="small-text">Projet présenté par Fortuno.</p>
+        </footer>
+    </div>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            document.querySelectorAll('.toggle-password').forEach(function (checkbox) {
+                checkbox.addEventListener('change', function () {
+                    var targetId = this.dataset.target;
+                    var input = document.getElementById(targetId);
+                    if (input) {
+                        input.type = this.checked ? 'text' : 'password';
+                    }
+                });
+            });
+        });
+    </script>
+</body>
+</html>

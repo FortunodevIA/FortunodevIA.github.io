@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FORTUNO_DEV_IA - Portfolio 3D</title>
+<link rel="stylesheet" href="assets/css/chateau.css">
+</head>
+<body>
+<div id="welcomeGuide">Bienvenue dans mon château. Je suis Fortuno. Entre dans mes projets en cliquant sur les tableaux — le premier est déjà en lumière.</div>
+<div id="lightFixture"><div class="wire"></div><button class="bulb" type="button" aria-label="Allumer ou éteindre la lumière"></button><div class="bulbText">💡 Clique sur l'ampoule pour allumer la lumière</div></div>
+<div id="projectPlan" aria-label="Plan du château"></div>
+<div id="projectHoverLabel">VOIR LE PROJET →</div>
+<div id="dust" aria-hidden="true"></div>
+<div id="mobileCastle" aria-label="Liste des projets"></div>
+<div id="endWallOverlay" role="dialog" aria-label="Fin de la visite">
+  <h2>MERCI DE TA VISITE</h2>
+  <h3>FORTUNO DEV IA</h3>
+  <p>Contact : presidentfortuno@gmail.com</p>
+  <nav>
+    <a href="mailto:presidentfortuno@gmail.com" target="_blank" rel="noopener"><svg class="social-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 4h20v16H2V4zm2 2v.5l8 5.5 8-5.5V6H4zm16 3.2-8 5.5-8-5.5V18h16v-8.8z"/></svg><span>M'ENVOYER UN EMAIL</span></a>
+    <a href="https://www.linkedin.com/in/fortuno-dev-ia-0a419a246" target="_blank" rel="noopener"><svg class="social-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.47-.9 1.64-1.85 3.37-1.85 3.6 0 4.27 2.37 4.27 5.46v6.28zM5.34 7.43a2.06 2.06 0 110-4.12 2.06 2.06 0 010 4.12zm1.78 13.02H3.56V9h3.56v11.45zM22.23 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.46c.98 0 1.77-.77 1.77-1.73V1.73C24 .77 23.21 0 22.23 0z"/></svg><span>MON LINKEDIN</span></a>
+    <a href="https://www.tiktok.com/@presidentfortuno" target="_blank" rel="noopener"><svg class="social-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M16.6 2c.2 1.6 1.1 3 2.5 3.9.9.5 1.9.8 3 .8v4c-1.9.1-3.7-.5-5.2-1.5v6.4c0 3.6-2.9 6.4-6.4 6.4S4 18.9 4 15.6s2.9-6.4 6.4-6.4c.4 0 .8 0 1.2.1v4a3.9 3.9 0 00-1.2-.2 2.5 2.5 0 100 5 2.5 2.5 0 002.5-2.5V2h3.7z"/></svg><span>MON TIKTOK</span></a>
+    <a href="https://www.facebook.com/share/1Q5naPUV8s/?mibextid=wwXIfr" target="_blank" rel="noopener"><svg class="social-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M24 12.07C24 5.41 18.63 0 12 0S0 5.41 0 12.07C0 18.09 4.39 23.08 10.13 24v-8.44H7.08v-3.49h3.05V9.37c0-3.04 1.79-4.72 4.53-4.72 1.31 0 2.68.24 2.68.24v2.98h-1.51c-1.49 0-1.96.93-1.96 1.89v2.31h3.33l-.53 3.49h-2.8V24C19.61 23.08 24 18.09 24 12.07z"/></svg><span>MON FACEBOOK</span></a>
+  </nav>
+  <button class="aboutCastle" type="button" onclick="aboutDetail()">👤 À PROPOS DE MOI</button>
+  <button class="returnCastle" type="button">← RETOUR À L'ENTRÉE</button>
+</div>
+<div class="top">FORTUNO_DEV_IA • ABIDJAN • CÔTE D'IVOIRE</div>
+<div class="title" id="intro"><h1>FORTUNO<br>DEV IA</h1><p>PORTFOLIO CRÉATIF ↓<br>FAITES DÉFILER POUR EXPLORER</p></div>
+<div class="bottom"><span>BAGAYOKO ABOULAYE</span><span>FAITES DÉFILER</span></div>
+<div class="card" id="card"><h2 id="cardTitle">Projet</h2><p id="cardText"></p><button id="cardButton" type="button">Voir le projet →</button></div>
+<div class="project-detail" id="projectDetail"><button class="close-detail" type="button" aria-label="Fermer">×</button><div id="detailContent"></div></div>
+<div class="scroll"></div>
+
+<script src="assets/vendor/three.min.js"></script>
+<script src="assets/vendor/gsap.min.js"></script>
+<script src="assets/vendor/ScrollTrigger.min.js"></script>
+<script src="assets/js/chateau.js"></script>
+</body>
+</html>

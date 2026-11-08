@@ -1,0 +1,44 @@
+{% extends 'quiz/base.html' %}
+
+{% block content %}
+<div class="hero-card">
+    <h2>Bienvenue sur EduQuiz AI</h2>
+    <p>Projet développé par <strong>Fortuno</strong> — une application web complète pour réviser efficacement.</p>
+    <p>Transforme tes cours PDF en quiz interactifs et découvre ton score immédiatement. <strong>Gratuit et illimité.</strong></p>
+    <div class="grid grid-fit spacing-top-lg">
+        <div class="panel">
+            <h3>Importer</h3>
+            <p>Envoie un PDF de cours — l'application extrait et analyse automatiquement le texte.</p>
+        </div>
+        <div class="panel">
+            <h3>Analyser</h3>
+            <p>Détection des définitions, mots-clés et concepts pour générer des questions pertinentes.</p>
+        </div>
+        <div class="panel">
+            <h3>Réviser</h3>
+            <p>Passe le quiz, consulte ton score et les explications pour chaque réponse.</p>
+        </div>
+    </div>
+    <div class="grid grid-3 spacing-top-lg">
+        <div class="panel panel-primary">
+            <h3>Utilisateurs</h3>
+            <p class="large-number">{{ public_stats.total_users }}</p>
+            <p class="small-text">comptes enregistrés</p>
+        </div>
+        <div class="panel panel-primary">
+            <h3>Quiz créés</h3>
+            <p class="large-number">{{ public_stats.total_quizzes }}</p>
+            <p class="small-text">quiz générés</p>
+        </div>
+        <div class="panel panel-primary">
+            <h3>Passages</h3>
+            <p class="large-number">{{ public_stats.total_attempts }}</p>
+            <p class="small-text">quiz complétés</p>
+        </div>
+    </div>
+    <div class="button-group text-center spacing-top-lg">
+        <a class="button" href="{% url 'quiz:register' %}">Créer un compte gratuit</a>
+        <a class="button secondary-button" href="{% url 'quiz:login' %}">Se connecter</a>
+    </div>
+</div>
+{% endblock %}

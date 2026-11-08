@@ -1,0 +1,42 @@
+{% extends 'quiz/base.html' %}
+
+{% block content %}
+<div class="quiz-card">
+    <h2>Révision des erreurs</h2>
+    <p>Reprends les questions que tu as manquées pour bien retenir les notions essentielles.</p>
+    {% if wrong_answers %}
+        {% if review_data %}
+            <div class="panel">
+                <h3>Résultat de ta révision</h3>
+                <p>Corrections réussies : <strong>{{ review_data.corrected }}/{{ review_data.max_score }}</strong></p>
+                <div class="summary-box">
+                    <pre style="white-space: pre-wrap; margin:0;">{{ review_data.feedback }}</pre>
+                </div>
+            </div>
+            <a class="button" href="{% url 'quiz:dashboard' %}">Retour au tableau de bord</a>
+        {% else %}
+            <form method="post">
+                {% csrf_token %}
+                {% for answer in wrong_answers %}
+                    <div class="panel panel-compact">
+                        <p><strong>Question {{ forloop.counter }}</strong></p>
+                        <p>{{ answer.question.text }}</p>
+                        {% for option_key, option_text in answer.question.all_options %}
+                            <label class="radio-label">
+                                <input type="radio" name="question_{{ answer.question.id }}" value="{{ option_key }}" />
+                                {{ option_text }}
+                            </label>
+                        {% endfor %}
+                    </div>
+                {% endfor %}
+                <input type="submit" class="button" value="Valider mes corrections" />
+            </form>
+        {% endif %}
+    {% else %}
+        <div class="panel">
+            <p>Félicitations ! Tu n’as aucune erreur à revoir sur ce quiz.</p>
+            <a class="button" href="{% url 'quiz:dashboard' %}">Retour au tableau de bord</a>
+        </div>
+    {% endif %}
+</div>
+{% endblock %}

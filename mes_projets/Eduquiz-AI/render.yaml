@@ -1,0 +1,22 @@
+services:
+  - type: web
+    name: eduquiz
+    env: python
+    plan: starter
+    buildCommand: pip install -r requirements.txt && python manage.py collectstatic --noinput
+    startCommand: python manage.py migrate --noinput && gunicorn --workers 3 eduquiz.wsgi:application
+    envVars:
+      - key: DEBUG
+        value: 'False'
+      - key: ALLOWED_HOSTS
+        value: 'eduquiz.onrender.com'
+      - key: CSRF_TRUSTED_ORIGINS
+        value: 'https://eduquiz.onrender.com'
+      - key: SECRET_KEY
+      - key: ANTHROPIC_API_KEY
+      - key: ANTHROPIC_MODEL
+
+databases:
+  - name: eduquiz-db
+    plan: starter
+    postgresVersion: 15

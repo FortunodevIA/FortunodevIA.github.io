@@ -1,0 +1,22 @@
+# Checkpoints et artefacts d'entraînement
+*.pth
+*.pt
+*.pkl
+
+# Données volumineuses
+
+# Environnements Python
+.venv/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+uv.lock
+
+# Outils locaux
+.agents/
+
+# Fichiers temporaires SQLite
+*-journal
+
+# macOS
+.DS_Store

@@ -1,0 +1,36 @@
+{% extends 'quiz/base.html' %}
+
+{% block content %}
+<div class="form-card">
+    <h2>Connexion</h2>
+    <form method="post">
+        {% csrf_token %}
+        {% if form.non_field_errors %}
+            <div class="error-box">
+                {% for error in form.non_field_errors %}
+                    <p>{{ error }}</p>
+                {% endfor %}
+            </div>
+        {% endif %}
+        <div class="field-group">
+            {{ form.username.label_tag }}
+            {{ form.username }}
+            {% for error in form.username.errors %}
+                <p class="error-text">{{ error }}</p>
+            {% endfor %}
+        </div>
+        <div class="field-group">
+            {{ form.password.label_tag }}
+            {{ form.password }}
+            {% for error in form.password.errors %}
+                <p class="error-text">{{ error }}</p>
+            {% endfor %}
+            <label class="password-toggle">
+                <input type="checkbox" class="toggle-password" data-target="{{ form.password.id_for_label }}" />
+                Afficher le mot de passe
+            </label>
+        </div>
+        <input type="submit" class="button" value="Se connecter" />
+    </form>
+</div>
+{% endblock %}

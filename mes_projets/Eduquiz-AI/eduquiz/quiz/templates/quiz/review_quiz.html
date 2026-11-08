@@ -1,0 +1,58 @@
+{% extends 'quiz/base.html' %}
+{% block content %}
+<h2>Relecture du quiz : {{ quiz.title }}</h2>
+<form method="post">
+  {% csrf_token %}
+  <div style="margin-bottom:8px">
+    <button type="submit" name="action" value="paraphrase" class="btn btn-secondary">Paraphraser (local)</button>
+    <span style="margin-left:8px;color:#666"> — Reformule toutes les questions automatiquement</span>
+  </div>
+  {% for q in questions %}
+    <div class="question-block">
+      <h4>Question {{ forloop.counter }}</h4>
+      <label>Texte</label>
+      <textarea name="text_{{ q.id }}" rows="3" style="width:100%">{{ q.text }}</textarea>
+      <div>
+        <label>Type généré automatiquement</label>
+        <div class="small-text">{{ q.question_type|upper }}</div>
+      </div>
+      <div>
+        <label>A</label>
+        <input type="text" name="option_a_{{ q.id }}" value="{{ q.option_a }}" style="width:45%">
+        <label>B</label>
+        <input type="text" name="option_b_{{ q.id }}" value="{{ q.option_b }}" style="width:45%">
+      </div>
+      <div>
+        <label>C</label>
+        <input type="text" name="option_c_{{ q.id }}" value="{{ q.option_c }}" style="width:45%">
+        <label>D</label>
+        <input type="text" name="option_d_{{ q.id }}" value="{{ q.option_d }}" style="width:45%">
+      </div>
+      <div>
+        <label>Correcte</label>
+        {% if q.question_type == 'multi' %}
+          {% for key, opt in q.all_options %}
+            <label><input type="checkbox" name="correct_{{ q.id }}" value="{{ key }}" {% if key in q.correct_options %}checked{% endif %}/> {{ key|upper }}</label>
+          {% endfor %}
+        {% elif q.question_type == 'tf' %}
+          <label><input type="radio" name="correct_{{ q.id }}" value="a" {% if q.correct_option == 'a' %}checked{% endif %}/> Vrai</label>
+          <label><input type="radio" name="correct_{{ q.id }}" value="b" {% if q.correct_option == 'b' %}checked{% endif %}/> Faux</label>
+        {% else %}
+          <select name="correct_{{ q.id }}">
+            <option value="a" {% if q.correct_option == 'a' %}selected{% endif %}>A</option>
+            <option value="b" {% if q.correct_option == 'b' %}selected{% endif %}>B</option>
+            <option value="c" {% if q.correct_option == 'c' %}selected{% endif %}>C</option>
+            <option value="d" {% if q.correct_option == 'd' %}selected{% endif %}>D</option>
+          </select>
+        {% endif %}
+      </div>
+      <div>
+        <label>Explication</label>
+        <textarea name="explanation_{{ q.id }}" rows="2" style="width:100%">{{ q.explanation }}</textarea>
+      </div>
+      <hr>
+    </div>
+  {% endfor %}
+  <button type="submit" class="btn btn-primary">Publier le quiz</button>
+</form>
+{% endblock %}

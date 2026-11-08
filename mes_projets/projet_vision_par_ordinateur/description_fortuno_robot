@@ -1,0 +1,2 @@
+J'ai Créé un robot appelé Fortuno Dev Al
+Robot, c'est un robot 3D intelligent qui utilise des modèles de machine learning pré-entraînés avec MediaPipe pour détecter le corps et le visage en temps réel. Il analyse les mouvements de l'utilisateur, mémorise ses séquences corporelles, puis les reproduit avec son modèle 3D grâce à Three.js. Le projet combine intelligence artificielle, vision par ordinateur, animation 3D et robotique.

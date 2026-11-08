@@ -1,0 +1,46 @@
+{% extends 'quiz/base.html' %}
+
+{% block content %}
+<div class="form-card">
+    <h2>Générer un quiz</h2>
+    <p>Crée un quiz à partir du document « {{ document.title }} ».</p>
+    {% if document.summary %}
+        <div class="summary-box">
+            <strong>Résumé automatique :</strong>
+            <p>{{ document.summary }}</p>
+        </div>
+    {% endif %}
+    {% if document.keyword_list %}
+        <div style="margin:16px 0;">
+            {% for keyword in document.keyword_list %}
+                <span class="badge">{{ keyword }}</span>
+            {% endfor %}
+        </div>
+    {% endif %}
+    <form method="post" id="quiz-form">
+        {% csrf_token %}
+        <div class="field-group">
+            {{ form.question_count.label_tag }}
+            {{ form.question_count }}
+        </div>
+        <div class="field-group">
+            {{ form.level.label_tag }}
+            {{ form.level }}
+        </div>
+        <input type="submit" class="button" id="quiz-submit" value="Générer le quiz" />
+        <p class="small-text" style="margin-top:12px;">
+            Analyse automatique du cours : définitions, mots-clés et compréhension.
+        </p>
+        <p id="quiz-loading" class="small-text" style="display:none; margin-top:12px;">
+            Génération en cours… Ne fermez pas la page.
+        </p>
+    </form>
+    <script>
+        document.getElementById('quiz-form').addEventListener('submit', function () {
+            document.getElementById('quiz-submit').disabled = true;
+            document.getElementById('quiz-submit').value = 'Génération en cours…';
+            document.getElementById('quiz-loading').style.display = 'block';
+        });
+    </script>
+</div>
+{% endblock %}

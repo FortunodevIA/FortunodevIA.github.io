@@ -1,0 +1,7 @@
+Django>=4.2,<7.0
+gunicorn
+whitenoise
+PyPDF2
+python-dotenv
+anthropic
+psycopg2-binary
