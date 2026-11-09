@@ -5,6 +5,7 @@ scene.fog = new THREE.Fog(0x3a0a0a, 7, 30);
 const camera = new THREE.PerspectiveCamera(70, innerWidth/innerHeight, 0.1, 100);
 camera.position.set(0, 1.7, 10);
 const renderer = new THREE.WebGLRenderer({antialias:true});
+renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
 renderer.setSize(innerWidth, innerHeight);
 document.body.appendChild(renderer.domElement);
 const globalLight = new THREE.AmbientLight(0xffa500, 0.45);
@@ -22,8 +23,9 @@ const ceil = new THREE.Mesh(new THREE.BoxGeometry(7,0.4,34), new THREE.MeshStand
 
 function makeTableau(title, sub, color, side, z){
   const x = side === 'left' ? -2.95 : 2.95;
-  const canvas = document.createElement('canvas'); canvas.width=512; canvas.height=320;
+  const canvas = document.createElement('canvas'); canvas.width=1024; canvas.height=640;
   const ctx = canvas.getContext('2d');
+  ctx.scale(2,2);
   ctx.fillStyle='#0a0a0a'; ctx.fillRect(0,0,512,320);
   ctx.fillStyle=color; ctx.font='bold 28px Arial'; ctx.fillText(title, 20, 55);
   ctx.fillStyle='#F5EFE6'; ctx.font='17px Arial'; ctx.fillText(sub, 20, 95);
@@ -107,7 +109,7 @@ const raycaster=new THREE.Raycaster(),mouse=new THREE.Vector2();
 renderer.domElement.addEventListener('click',e=>{mouse.x=e.clientX/innerWidth*2-1;mouse.y=-(e.clientY/innerHeight)*2+1;raycaster.setFromCamera(mouse,camera);const hit=raycaster.intersectObjects(projects,true)[0];if(hit){let g=hit.object;while(g&&(!g.userData||!g.userData.project))g=g.parent;if(g&&g.userData.project){firstGuided=false;location.href=`projet.html?project=${g.userData.project.id}`}}});
 gsap.to(camera.position, {
   z: -42, ease:'none',
-  scrollTrigger:{trigger:'.scroll', start:'top top', end:'bottom bottom', scrub:1,
+  scrollTrigger:{trigger:'.scroll', start:'top top', end:'bottom bottom', scrub:true,
     onUpdate: self=>{
       const p=self.progress,idx=Math.min(projectData.length-1,Math.floor(p*projectData.length));activeProject=projectData[idx];document.getElementById('intro').style.opacity=String(1-p*4);const card=document.getElementById('card');if(p>.035&&p<.97){card.style.display='block';document.getElementById('cardTitle').innerText=activeProject.title;document.getElementById('cardText').innerText=activeProject.sub}else card.style.display='none';
     }
@@ -167,4 +169,4 @@ renderer.domElement.addEventListener('mouseleave',()=>{if(hoverGroup){hoverGroup
 
 function animate(){requestAnimationFrame(animate);if(firstGuided&&projects[0]){const s=1.06+Math.sin(performance.now()*0.004)*0.025;projects[0].scale.set(s,s,s);projects[0].userData.frameMaterial.emissive.setHex(Math.floor(performance.now()/220)%2?0xff6a00:0x4a2200)}renderer.render(scene,camera)}
 animate();
-addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setSize(innerWidth,innerHeight)});
+addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));renderer.setSize(innerWidth,innerHeight)});
