@@ -28,11 +28,51 @@ function makeTableau(title, sub, color, side, z){
   const ctx = canvas.getContext('2d');
   ctx.scale(2,2);
   ctx.fillStyle='#0a0a0a'; ctx.fillRect(0,0,512,320);
-  ctx.fillStyle=color; ctx.font=mobileBoard?'bold 34px Arial':'bold 28px Arial'; ctx.fillText(title, 20, 58, 472);
-  ctx.fillStyle='#F5EFE6'; ctx.font=mobileBoard?'24px Arial':'17px Arial'; ctx.fillText(sub, 20, 112, 472);
-  ctx.fillStyle=color; ctx.fillRect(20,150,280,6);
-  ctx.fillStyle='#bbb'; ctx.font=mobileBoard?'21px Arial':'15px Arial'; ctx.fillText('Fait par Fortuno_dev_IA', 20, 195, 472);
-  ctx.fillStyle='#F5EFE6'; ctx.font=mobileBoard?'bold 26px Arial':'bold 19px Arial'; ctx.fillText('VOIR LE PROJET', 20, 260, 472);
+  if(mobileBoard){
+    const drawWrappedText=(text,x,y,maxWidth,lineHeight,maxLines)=>{
+      const baseFont=ctx.font;
+      const fontSizeMatch=baseFont.match(/(\d+(?:\.\d+)?)px/);
+      let fontSize=fontSizeMatch?Number(fontSizeMatch[1]):21;
+      const wrap=()=>{
+        const lines=[];
+        let line='';
+        for(const word of text.split(/\s+/)){
+          const candidate=line?`${line} ${word}`:word;
+          if(line&&ctx.measureText(candidate).width>maxWidth){lines.push(line);line=word}else line=candidate;
+        }
+        if(line)lines.push(line);
+        return lines;
+      };
+      let lines=wrap();
+      while(lines.length>maxLines&&fontSize>22){
+        fontSize-=2;
+        ctx.font=baseFont.replace(/(\d+(?:\.\d+)?)px/,`${fontSize}px`);
+        lines=wrap();
+      }
+      if(lines.length>maxLines){
+        lines.length=maxLines;
+        let last=lines[maxLines-1];
+        while(last&&ctx.measureText(`${last}…`).width>maxWidth)last=last.slice(0,last.lastIndexOf(' '));
+        lines[maxLines-1]=`${last||text.slice(0,12)}…`;
+      }
+      const adjustedLineHeight=Math.min(lineHeight,fontSize*1.15);
+      lines.forEach((value,index)=>ctx.fillText(value,x,y+index*adjustedLineHeight));
+      return y+(lines.length-1)*adjustedLineHeight;
+    };
+    ctx.fillStyle=color; ctx.font='bold 30px Arial';
+    drawWrappedText(title,20,52,440,34,2);
+    ctx.fillStyle='#F5EFE6'; ctx.font='21px Arial';
+    drawWrappedText(sub,20,112,440,25,2);
+    ctx.fillStyle=color; ctx.fillRect(20,170,280,6);
+    ctx.fillStyle='#bbb'; ctx.font='18px Arial'; ctx.fillText('Fait par Fortuno_dev_IA',20,207);
+    ctx.fillStyle='#F5EFE6'; ctx.font='bold 23px Arial'; ctx.fillText('VOIR LE PROJET',20,267);
+  }else{
+    ctx.fillStyle=color; ctx.font='bold 28px Arial'; ctx.fillText(title,20,55);
+    ctx.fillStyle='#F5EFE6'; ctx.font='17px Arial'; ctx.fillText(sub,20,95);
+    ctx.fillStyle=color; ctx.fillRect(20,125,280,6);
+    ctx.fillStyle='#bbb'; ctx.font='15px Arial'; ctx.fillText('Fait par Fortuno_dev_IA',20,170);
+    ctx.fillStyle='#F5EFE6'; ctx.font='bold 19px Arial'; ctx.fillText('VOIR LE PROJET',20,250);
+  }
   const tex = new THREE.CanvasTexture(canvas);
   tex.anisotropy = Math.min(renderer.capabilities.getMaxAnisotropy(), 8);
   const group = new THREE.Group();
