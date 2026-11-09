@@ -2,7 +2,7 @@ gsap.registerPlugin(ScrollTrigger);
 const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x3a0a0a);
 scene.fog = new THREE.Fog(0x3a0a0a, 7, 30);
-const camera = new THREE.PerspectiveCamera(70, innerWidth/innerHeight, 0.1, 100);
+const camera = new THREE.PerspectiveCamera(window.matchMedia('(max-width: 767px)').matches?82:70, innerWidth/innerHeight, 0.1, 100);
 camera.position.set(0, 1.7, 10);
 const renderer = new THREE.WebGLRenderer({antialias:true});
 renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
@@ -22,8 +22,8 @@ const rightWall = new THREE.Mesh(new THREE.BoxGeometry(0.4,5,34), wallMat); righ
 const ceil = new THREE.Mesh(new THREE.BoxGeometry(7,0.4,34), new THREE.MeshStandardMaterial({color:0x000000, roughness:0.95})); ceil.position.set(0,4.8,-2); scene.add(ceil);
 
 function makeTableau(title, sub, color, side, z){
-  const x = side === 'left' ? -2.95 : 2.95;
   const mobileBoard = window.matchMedia('(max-width: 767px)').matches;
+  const x = side === 'left' ? (mobileBoard ? -0.55 : -2.95) : (mobileBoard ? 0.55 : 2.95);
   const canvas = document.createElement('canvas'); canvas.width=1024; canvas.height=640;
   const ctx = canvas.getContext('2d');
   ctx.scale(2,2);
@@ -59,13 +59,14 @@ function makeTableau(title, sub, color, side, z){
       lines.forEach((value,index)=>ctx.fillText(value,x,y+index*adjustedLineHeight));
       return y+(lines.length-1)*adjustedLineHeight;
     };
+    ctx.textAlign='center';
     ctx.fillStyle=color; ctx.font='bold 30px Arial';
-    drawWrappedText(title,20,52,440,34,2);
+    drawWrappedText(title,256,52,400,34,2);
     ctx.fillStyle='#F5EFE6'; ctx.font='21px Arial';
-    drawWrappedText(sub,20,112,440,25,2);
-    ctx.fillStyle=color; ctx.fillRect(20,170,280,6);
-    ctx.fillStyle='#bbb'; ctx.font='18px Arial'; ctx.fillText('Fait par Fortuno_dev_IA',20,207);
-    ctx.fillStyle='#F5EFE6'; ctx.font='bold 23px Arial'; ctx.fillText('VOIR LE PROJET',20,267);
+    drawWrappedText(sub,256,112,400,25,2);
+    ctx.fillStyle=color; ctx.fillRect(116,170,280,6);
+    ctx.fillStyle='#bbb'; ctx.font='18px Arial'; ctx.fillText('Fait par Fortuno_dev_IA',256,207,400);
+    ctx.fillStyle='#F5EFE6'; ctx.font='bold 23px Arial'; ctx.fillText('VOIR LE PROJET',256,267,400);
   }else{
     ctx.fillStyle=color; ctx.font='bold 28px Arial'; ctx.fillText(title,20,55);
     ctx.fillStyle='#F5EFE6'; ctx.font='17px Arial'; ctx.fillText(sub,20,95);
@@ -77,13 +78,14 @@ function makeTableau(title, sub, color, side, z){
   tex.anisotropy = Math.min(renderer.capabilities.getMaxAnisotropy(), 8);
   const group = new THREE.Group();
   const frameMaterial = new THREE.MeshStandardMaterial({color:0xffd700, emissive:0x000000, metalness:0.7, roughness:0.3});
-  const frame = new THREE.Mesh(new THREE.BoxGeometry(2.6,1.8,0.08), frameMaterial);
-  const img = new THREE.Mesh(new THREE.PlaneGeometry(2.4,1.6), new THREE.MeshBasicMaterial({map:tex}));
+  const frame = new THREE.Mesh(new THREE.BoxGeometry(mobileBoard?2.3:2.6,mobileBoard?1.65:1.8,0.08), frameMaterial);
+  const img = new THREE.Mesh(new THREE.PlaneGeometry(mobileBoard?2.1:2.4,mobileBoard?1.4:1.6), new THREE.MeshBasicMaterial({map:tex}));
   frame.userData.tableauGroup = null;
   img.userData.tableauGroup = null;
   if(side === 'left'){ group.rotation.y = mobileBoard ? Math.PI/4 : Math.PI/2; } else { group.rotation.y = mobileBoard ? -Math.PI/4 : -Math.PI/2; }
   group.add(frame); img.position.z = 0.06; group.add(img);
   group.position.set(x, 2.1, z);
+  if(mobileBoard)group.scale.setScalar(0.75);
   group.userData = {title, desc:sub, project:projectData.find(p=>p.title===title), frameMaterial};
   frame.userData.tableau = group;
   img.userData.tableau = group;
@@ -209,6 +211,6 @@ const hoverLabel=document.getElementById('projectHoverLabel');
 renderer.domElement.addEventListener('mousemove',e=>{mouse.x=e.clientX/innerWidth*2-1;mouse.y=-(e.clientY/innerHeight)*2+1;raycaster.setFromCamera(mouse,camera);const hit=raycaster.intersectObjects(projects,true)[0];let next=null;if(hit){let g=hit.object;while(g&&!g.userData.project)g=g.parent;if(g&&g.userData.project)next=g;}if(hoverGroup&&hoverGroup!==next){hoverGroup.scale.set(1,1,1);if(hoverGroup.userData.frameMaterial)hoverGroup.userData.frameMaterial.emissive.set(0x000000)}hoverGroup=next;if(next){next.scale.set(1.1,1.1,1.1);if(next.userData.frameMaterial)next.userData.frameMaterial.emissive.set(0x5c3a00);hoverLabel.classList.add('show');hoverLabel.style.left=`${e.clientX+18}px`;hoverLabel.style.top=`${e.clientY-38}px`}else{hoverLabel.classList.remove('show')}});
 renderer.domElement.addEventListener('mouseleave',()=>{if(hoverGroup){hoverGroup.scale.set(1,1,1);hoverGroup.userData.frameMaterial&&hoverGroup.userData.frameMaterial.emissive.set(0x000000)}hoverGroup=null;hoverLabel.classList.remove('show')});
 
-function animate(){requestAnimationFrame(animate);if(firstGuided&&projects[0]){const s=1.06+Math.sin(performance.now()*0.004)*0.025;projects[0].scale.set(s,s,s);projects[0].userData.frameMaterial.emissive.setHex(Math.floor(performance.now()/220)%2?0xff6a00:0x4a2200)}renderer.render(scene,camera)}
+function animate(){requestAnimationFrame(animate);if(firstGuided&&projects[0]){const s=(1.06+Math.sin(performance.now()*0.004)*0.025)*(projects[0].userData.mobileBoard?0.75:1);projects[0].scale.set(s,s,s);projects[0].userData.frameMaterial.emissive.setHex(Math.floor(performance.now()/220)%2?0xff6a00:0x4a2200)}renderer.render(scene,camera)}
 animate();
-addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.updateProjectionMatrix();renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));renderer.setSize(innerWidth,innerHeight)});
+addEventListener('resize',()=>{camera.aspect=innerWidth/innerHeight;camera.fov=window.matchMedia('(max-width: 767px)').matches?82:70;camera.updateProjectionMatrix();renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));renderer.setSize(innerWidth,innerHeight)});
