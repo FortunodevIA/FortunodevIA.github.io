@@ -23,23 +23,25 @@ const ceil = new THREE.Mesh(new THREE.BoxGeometry(7,0.4,34), new THREE.MeshStand
 
 function makeTableau(title, sub, color, side, z){
   const x = side === 'left' ? -2.95 : 2.95;
+  const mobileBoard = window.matchMedia('(max-width: 767px)').matches;
   const canvas = document.createElement('canvas'); canvas.width=1024; canvas.height=640;
   const ctx = canvas.getContext('2d');
   ctx.scale(2,2);
   ctx.fillStyle='#0a0a0a'; ctx.fillRect(0,0,512,320);
-  ctx.fillStyle=color; ctx.font='bold 28px Arial'; ctx.fillText(title, 20, 55);
-  ctx.fillStyle='#F5EFE6'; ctx.font='17px Arial'; ctx.fillText(sub, 20, 95);
-  ctx.fillStyle=color; ctx.fillRect(20,125,280,6);
-  ctx.fillStyle='#bbb'; ctx.font='15px Arial'; ctx.fillText('Fait par Fortuno_dev_IA', 20, 170);
-  ctx.fillStyle='#F5EFE6'; ctx.font='bold 19px Arial'; ctx.fillText('VOIR LE PROJET', 20, 250);
+  ctx.fillStyle=color; ctx.font=mobileBoard?'bold 34px Arial':'bold 28px Arial'; ctx.fillText(title, 20, 58, 472);
+  ctx.fillStyle='#F5EFE6'; ctx.font=mobileBoard?'24px Arial':'17px Arial'; ctx.fillText(sub, 20, 112, 472);
+  ctx.fillStyle=color; ctx.fillRect(20,150,280,6);
+  ctx.fillStyle='#bbb'; ctx.font=mobileBoard?'21px Arial':'15px Arial'; ctx.fillText('Fait par Fortuno_dev_IA', 20, 195, 472);
+  ctx.fillStyle='#F5EFE6'; ctx.font=mobileBoard?'bold 26px Arial':'bold 19px Arial'; ctx.fillText('VOIR LE PROJET', 20, 260, 472);
   const tex = new THREE.CanvasTexture(canvas);
+  tex.anisotropy = Math.min(renderer.capabilities.getMaxAnisotropy(), 8);
   const group = new THREE.Group();
   const frameMaterial = new THREE.MeshStandardMaterial({color:0xffd700, emissive:0x000000, metalness:0.7, roughness:0.3});
   const frame = new THREE.Mesh(new THREE.BoxGeometry(2.6,1.8,0.08), frameMaterial);
   const img = new THREE.Mesh(new THREE.PlaneGeometry(2.4,1.6), new THREE.MeshBasicMaterial({map:tex}));
   frame.userData.tableauGroup = null;
   img.userData.tableauGroup = null;
-  if(side === 'left'){ group.rotation.y = Math.PI/2; } else { group.rotation.y = -Math.PI/2; }
+  if(side === 'left'){ group.rotation.y = mobileBoard ? Math.PI/4 : Math.PI/2; } else { group.rotation.y = mobileBoard ? -Math.PI/4 : -Math.PI/2; }
   group.add(frame); img.position.z = 0.06; group.add(img);
   group.position.set(x, 2.1, z);
   group.userData = {title, desc:sub, project:projectData.find(p=>p.title===title), frameMaterial};
@@ -119,7 +121,7 @@ let firstGuided=true;
 const fixture=document.getElementById('lightFixture');
 const bulb=fixture.querySelector('.bulb');
 let lightOn=false;
-bulb.addEventListener('click',e=>{e.stopPropagation();lightOn=!lightOn;fixture.classList.toggle('light-on',lightOn);document.body.classList.toggle('chateau-lit',lightOn);globalLight.intensity=lightOn?1.15:0.45;ceilingLight.intensity=lightOn?1.35:0.8;wallMat.emissive.setHex(lightOn?0x8b3f00:0x000000);wallMat.emissiveIntensity=lightOn?0.16:0;projects.forEach(p=>{if(p.userData.frameMaterial)p.userData.frameMaterial.emissive.setHex(lightOn?0xffa500:0x000000);p.userData.frameMaterial.emissiveIntensity=lightOn?0.28:0;});});
+bulb.addEventListener('click',e=>{e.stopPropagation();lightOn=!lightOn;bulb.setAttribute('aria-pressed',String(lightOn));bulb.setAttribute('aria-label',lightOn?'Cliquer pour éteindre la lumière du château':'Cliquer pour éclairer le château');bulb.title=lightOn?'Cliquer pour éteindre la lumière du château':'Cliquer pour éclairer le château';document.getElementById('bulbHint').textContent=lightOn?'Clique à nouveau pour éteindre la lumière':'Clique sur l’ampoule pour éclairer le château';fixture.classList.toggle('light-on',lightOn);document.body.classList.toggle('chateau-lit',lightOn);globalLight.intensity=lightOn?1.15:0.45;ceilingLight.intensity=lightOn?1.35:0.8;wallMat.emissive.setHex(lightOn?0x8b3f00:0x000000);wallMat.emissiveIntensity=lightOn?0.16:0;projects.forEach(p=>{if(p.userData.frameMaterial)p.userData.frameMaterial.emissive.setHex(lightOn?0xffa500:0x000000);p.userData.frameMaterial.emissiveIntensity=lightOn?0.28:0;});});
 
 const welcome=document.getElementById('welcomeGuide');
 welcome.classList.add('welcome-show');setTimeout(()=>welcome.classList.remove('welcome-show'),5000);
